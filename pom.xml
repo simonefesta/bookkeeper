@@ -110,6 +110,8 @@
     <javac.target>1.8</javac.target>
     <redirectTestOutputToFile>true</redirectTestOutputToFile>
     <testRetryCount>2</testRetryCount>
+    <nar.aolProperties>${project.basedir}/bookkeeper/aol.properties</nar.aolProperties> <!-- MAC compatible-->
+
 
     <!-- dependencies -->
     <arquillian-cube.version>1.18.2</arquillian-cube.version>
