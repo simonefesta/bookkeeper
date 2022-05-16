@@ -118,7 +118,7 @@
   <!-- ispw2 things -->	
   <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   <sonar.organization>simonefesta</sonar.organization>
-  <sonar.host.url>https://sonarcloud.io</sonar.host.url
+  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
     <!-- dependencies -->
     <arquillian-cube.version>1.18.2</arquillian-cube.version>
