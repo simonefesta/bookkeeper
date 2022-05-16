@@ -116,7 +116,7 @@
     <nar.aolProperties>${project.basedir}/bookkeeper/aol.properties</nar.aolProperties> <!-- MAC compatible-->
 	  
   <!-- ispw2 things -->	
-  <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/tests/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+  <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/bookkeeper-jacoco/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   <sonar.organization>simonefesta</sonar.organization>
   <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
