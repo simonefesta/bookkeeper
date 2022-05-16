@@ -7,6 +7,10 @@
  </parent>
 <modelVersion>4.0.0</modelVersion>
   
+<artifactId>bookkeeper-jacoco</artifactId>
+
+ <name>bookkeeper-and-jacoco</name>
+  
   
 
 <build>
