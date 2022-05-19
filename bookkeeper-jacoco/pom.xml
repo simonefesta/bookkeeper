@@ -6,44 +6,14 @@
     <groupId>org.apache.bookkeeper</groupId>
     <version>4.16.0-SNAPSHOT</version>
  </parent>
-   <!-- <groupId>org.apache.bookkeeper</groupId>
+
     <artifactId>bookkeeper-jacoco</artifactId>
-    <version>4.15.0-SNAPSHOT</version>
     <name>Apache BookKeeper :: Tests :: Jacoco Aggregation</name>
-    <url>http://maven.apache.org</url>-->
+
     <dependencies>
-        <dependency>
-            <groupId>org.apache.bookkeeper</groupId>
-            <artifactId>bookkeeper-server</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-    </dependencies>
-
-    <artifactId>bookkeeper-jacoco</artifactId>
-    <name>Apache BookKeeper :: Tests :: Jacoco Aggregation</name>
-
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.jacoco</groupId>
-      <artifactId>jacoco-maven-plugin</artifactId>
-      <executions>
-        <execution>
-          <id>report</id>
-          <goals>
-            <goal>report-aggregate</goal>
-          </goals>
-          <phase>verify</phase>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
-</build>
-</project>
-        <!--<dependencies>
 
                   <dependency>
-                      <groupId>org.apache.bookkeeper</groupId>
+                      <groupId>${parent.groupId}</groupId>
                       <artifactId>bookkeeper-benchmark</artifactId>
                       <version>${project.parent.version}</version>
                   </dependency>
@@ -62,11 +32,11 @@
                       <artifactId>bkctl</artifactId>
                       <version>${project.parent.version}</version>
                   </dependency>
-                  <dependency>
+                <!--  <dependency>
                       <groupId>org.apache.bookkeeper</groupId>
                       <artifactId>bookkeeper-dist-all</artifactId>
                       <version>${project.parent.version}</version>
-                  </dependency>
+                  </dependency> -->
                   <dependency>
                       <groupId>org.apache.bookkeeper</groupId>
                       <artifactId>bookkeeper-dist-server</artifactId>
@@ -357,4 +327,25 @@
             </dependencies>
 
 
-        -->
+
+
+
+
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>report</id>
+          <goals>
+            <goal>report-aggregate</goal>
+          </goals>
+          <phase>verify</phase>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+</project>
