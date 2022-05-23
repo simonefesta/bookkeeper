@@ -28,7 +28,6 @@ public class ReadCacheParameterizedTest {
     private long entryIdGet;
 
 
- /** entry 1024 segment 5120 **/
     private  ByteBuf entry;
     private ReadCache cache = null;
 
@@ -65,10 +64,10 @@ public class ReadCacheParameterizedTest {
         cache = new ReadCache(UnpooledByteBufAllocator.DEFAULT, 10 * 1024);
 
         if(entryIdPut == 2) {
-                              entry = Unpooled.wrappedBuffer(new byte[5121]);
+                              entry = Unpooled.wrappedBuffer(new byte[5121]); //too big size
                             }
         else {
-               entry = Unpooled.wrappedBuffer(new byte[1024]);
+               entry = Unpooled.wrappedBuffer(new byte[1024]); //std size
 
             }
     }
