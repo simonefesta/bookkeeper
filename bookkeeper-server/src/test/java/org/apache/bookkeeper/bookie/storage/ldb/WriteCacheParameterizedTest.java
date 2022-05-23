@@ -34,7 +34,7 @@ public class WriteCacheParameterizedTest {
         this.ledgerId = ledgerId;
         this.entryId = entryId;
         this.entry = entry;
-        this.existsMaxSegmentSize = existsMaxSegmentSize;
+        this.existsMaxSegmentSize = existsMaxSegmentSize; //serve nel setup per definire new writeCache
     }
 
     @Parameterized.Parameters
@@ -71,7 +71,8 @@ public class WriteCacheParameterizedTest {
     public void TestWriteCache(){
         boolean actual;
         try {
-            actual = cache.put(ledgerId,entryId,entry);
+            cache.put(ledgerId,entryId,entry);
+            actual = cache.get(ledgerId,entryId).equals(entry);
         } catch (Exception e)
         {
             actual = false;
