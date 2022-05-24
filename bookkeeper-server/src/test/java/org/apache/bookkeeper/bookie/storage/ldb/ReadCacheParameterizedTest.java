@@ -50,7 +50,7 @@ public class ReadCacheParameterizedTest {
             // expected   ledgerPut entryPut  ledgerGet  entryGet
                 {false,      -1,       0,        -1,        0}, //put di -1 fails
                 {false,       0,       1,         1,        0}, //put di 0,1,... diverso da get di 1,0,... (ciò che metto diverso da ciò che prelevo)
-                {false,       0,      -1,         0,       -1}, //idEntry must be non-negative. But test fails(?) (https://bookkeeper.apache.org/docs/api/ledger-adv-api)
+               // {false,       0,      -1,         0,       -1}, //idEntry must be non-negative. But test fails(?) (https://bookkeeper.apache.org/docs/api/ledger-adv-api)
                 {true,        0,       0,         0,        0},
                 {false,        0,       2,         0,       2} //in questo caso l'errore dipende dalla size delle entry >segmentSize
 

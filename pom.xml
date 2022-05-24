@@ -109,8 +109,6 @@
   </developers>
   <properties>
 
-    <ba-dua.dir>ba-dua-master/ba-dua-agent-rt/target</ba-dua.dir>
-
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
