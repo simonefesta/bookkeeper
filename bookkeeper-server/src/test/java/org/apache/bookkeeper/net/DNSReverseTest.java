@@ -34,12 +34,13 @@ public class DNSReverseTest {
     public static Collection<?> getParameter() throws UnknownHostException {
 
         return Arrays.asList(new Object[][]{
-                //expected    //hostIp  //nameServer
-                {"mil04s50-in-f4.1e100.net.", InetAddress.getByName("142.251.209.4"), "8.8.8.8"},
-                //{"error", InetAddress.getByName("104.78.251.72"), null }, era ikea
-                {"error", null, "8.8.8.8"},
-                {"error",InetAddress.getByName("127.0.0.1"),"8.8.8.8"},
-                //{"mil04s50-in-f4.1e100.net.",InetAddress.getByName("2001:4860:4860::8888"),"8.8.8.8"}, //do ipv6
+                //expected                              //hostIp                                //nameServer
+                {"mil04s50-in-f4.1e100.net.",   InetAddress.getByName("142.251.209.4"),         "8.8.8.8"}, //google
+                {"error",                               null,                                        null},
+                {"error",                        InetAddress.getByName("127.0.0.1"),            "8.8.8.8"},
+                //{"mil04s50-in-f4.1e100.net.",    InetAddress.getByName("2001:4860:4860::8888"), "8.8.8.8"}, //do ipv6. Bookkeeper non lo supporta, anche se InetAddress si.
+                {"error",    InetAddress.getByName("2001:4860:4860::8888"), "8.8.8.8"}, //do ipv6
+
 
         });
 

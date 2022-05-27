@@ -287,6 +287,8 @@
       </plugin>
     </plugins>
   </build>
+
+
   <profiles>
     <profile>
       <id>vertx-http-server</id>
@@ -419,5 +421,56 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>mutation</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <withHistory>true</withHistory>
+        <pitest.version>1.8.0</pitest.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.version}</version>
+            <configuration>
+              <targetClasses>
+                <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCache</param>
+                <param>org.apache.bookkeeper.net.DNS</param>
+              </targetClasses>
+              <targetTests>
+
+                <param>org.apache.bookkeeper.bookie.storage.ldb.GetWriteCacheTest</param>
+                <param>org.apache.bookkeeper.bookie.storage.ldb.PutWriteCacheTest</param>
+
+                <param>org.apache.bookkeeper.net.storage.DNSGetHostsTest</param>
+                <param>org.apache.bookkeeper.net.DNSGetIpTest</param>
+                <param>org.apache.bookkeeper.net.DNSReverseTest</param>
+
+              </targetTests>
+              <avoidCallsTo>
+                <avoidCallsTo>org.slf4j</avoidCallsTo>
+              </avoidCallsTo>
+            </configuration>
+            <executions>
+              <execution>
+                <id>Mutation report</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
+
   </profiles>
 </project>
