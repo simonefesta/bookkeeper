@@ -31,7 +31,7 @@ jobs:
         run: mvn -B verify -P mutation
 
       - name: Add Pit report
-          uses: actions/upload-artifact@v3
-          with:
+        uses: actions/upload-artifact@v3
+        with:
             name: pit-reports
             path: bookkeeper-server/target/pit-reports/
