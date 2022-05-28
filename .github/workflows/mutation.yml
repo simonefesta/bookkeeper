@@ -1,7 +1,11 @@
 name: Mutation Testing with Pitest
 
-on: workflow_dispatch
-
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     name: Build
