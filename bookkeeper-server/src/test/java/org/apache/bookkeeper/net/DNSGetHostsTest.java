@@ -46,11 +46,11 @@ public class DNSGetHostsTest {
          localAddress = new String[]{"192.168.0.104", "localhost", "127.0.0.1"};
 
         return Arrays.asList(new Object[][]{
-                //expected                                                     //strInterface        //nameserver
-                {localAddress,     "default",               "8.8.8.8"},
-                {localAddress,       "utun4",          "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
-                {null,                                                             null,                    null},
-                {null,                                                            "anpi4",                 null}
+                //expected                          //strInterface        //nameserver
+                {localAddress,                        "default",         "8.8.8.8"},
+                {localAddress,                         "utun4",          "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
+                {new String[]{"error"},                 null,             null},
+                {new String[]{"error"},                "anpi4",                 null}
         });
 
 
@@ -65,10 +65,10 @@ public class DNSGetHostsTest {
             actual = DNS.getHosts(strInterface, nameserver);
          } catch (UnknownHostException | NullPointerException e)
               {
-                 actual = null;
+                 actual = new String[]{"error"};
               }
 
-          if (expected == localAddress && actual != null)
+          if (expected == localAddress)
           {     // Durante i test ho notato che actual ritornava 127.0.0.1 or localhost or 192.168.0.104. Non potendo 'prevedere' quale avrei ottenuto, confronto l'actual con tutti e 3.
               assertTrue(Arrays.asList(expected).contains(actual[0]));
           }
