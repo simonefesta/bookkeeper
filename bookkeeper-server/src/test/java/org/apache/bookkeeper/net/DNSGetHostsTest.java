@@ -44,8 +44,8 @@ public class DNSGetHostsTest {
     public static Collection<?> getParameter() throws UnknownHostException {
         return Arrays.asList(new Object[][]{
                 //expected                                                     //strInterface        //nameserver
-                {new String[]{Inet4Address.getLocalHost().getHostAddress()},     "default",               "8.8.8.8"},
-                {new String[]{Inet4Address.getLocalHost().getHostAddress()},     "anpi0",                    "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
+                {new String[]{"192.168.0.104"},     "default",               "8.8.8.8"},
+                {new String[]{"192.168.0.104"},     "utun4",                    "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
                 {null,                                                             null,                    "3.211.1.0e"},
                 {null,                                                            "anpi4",                 null}
         });
@@ -56,18 +56,20 @@ public class DNSGetHostsTest {
 
     @Test
     public void TestGetHosts()  {
-         String actual[];
+         String[] actual;
         try{
+
             actual = DNS.getHosts(strInterface, nameserver);
          } catch (UnknownHostException | NullPointerException e)
               {
                  actual = null;
               }
-        assertArrayEquals(expected,actual);
+            assertArrayEquals(expected, actual);
+        }
 
       
     }
 
-}
+
 
 
