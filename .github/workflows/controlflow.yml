@@ -1,4 +1,4 @@
-name: Build
+name: Control Flow with Jacoco
 on:
   push:
     branches:
