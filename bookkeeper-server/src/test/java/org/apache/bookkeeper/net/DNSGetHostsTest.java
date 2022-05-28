@@ -50,7 +50,7 @@ public class DNSGetHostsTest {
                 {localAddress,                        "default",         "8.8.8.8"},
                 {localAddress,                         "utun4",          "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
                 {new String[]{"error"},                 null,             null},
-                {new String[]{"error"},                "anpi4",                 null}
+                {new String[]{"error"},                "anpi4",           null}
         });
 
 

@@ -37,8 +37,7 @@ public class DNSGetIpTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                                                                           //strInterface
-                {new String[]{"fe80:0:0:0:0:0:0:1%lo0","0:0:0:0:0:0:0:1%lo0","127.0.0.1"},            "lo0"}, //attenzione:  substring(13) poichè il metodo ritorna MacAir.local/indirizzo IP, e voglio solo indirizzo IP.
-                {new String[]{"fe80::7031:31ff:fe4d:1840%anpi1".replace("::",":0:0:0:")},             "anpi1"}, //ricavato da ifconfig -a, prendendo indirizzo inet6. il replace viene fatto perchè getIps non ritorna fe80:: ma fe80.0.0.0.
+                {new String[]{"fe80:0:0:0:6010:eff:feb9:ca3f%llw0"},                                   "llw0"}, //attenzione:  substring(13) poichè il metodo ritorna MacAir.local/indirizzo IP, e voglio solo indirizzo IP.
                 {new String[]{"error"},                                                               "bridge0"}, //non ha alcun 'inet6', quindi mi aspetto di non ottenere nulla.
                 {new String[]{"error"},                                                               "invalid"}, //fornisco interfaccia non valida, non mi aspetto nulla.
                 {new String[]{"error"},                                                                 null}
