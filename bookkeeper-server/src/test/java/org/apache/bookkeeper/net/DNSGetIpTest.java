@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+
 
 @RunWith(Parameterized.class)
 public class DNSGetIpTest {
