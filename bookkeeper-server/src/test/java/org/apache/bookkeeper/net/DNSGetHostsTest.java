@@ -41,12 +41,12 @@ public class DNSGetHostsTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<?> getParameter() throws UnknownHostException {
+    public static Collection<?> getParameter()  {
         return Arrays.asList(new Object[][]{
                 //expected                                                     //strInterface        //nameserver
                 {new String[]{"192.168.0.104"},     "default",               "8.8.8.8"},
                 {new String[]{"192.168.0.104"},     "utun4",                    "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
-                {null,                                                             null,                    "3.211.1.0e"},
+                {null,                                                             null,                    null},
                 {null,                                                            "anpi4",                 null}
         });
 
