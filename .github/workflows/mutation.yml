@@ -25,7 +25,7 @@ jobs:
       - name: Pitest check
         run: mvn -B verify -P mutation
 
-      - name: Add Pit report
+      - name: Add Pit reports
         uses: actions/upload-artifact@v3
         with:
             name: pit-reports
