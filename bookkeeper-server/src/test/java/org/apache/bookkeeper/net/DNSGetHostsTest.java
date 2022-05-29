@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized;
 
 import java.net.Inet4Address;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,12 +43,12 @@ public class DNSGetHostsTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<?> getParameter()  {
+    public static Collection<?> getParameter() {
          localAddress = new String[]{"192.168.0.104", "localhost", "127.0.0.1"};
 
         return Arrays.asList(new Object[][]{
                 //expected                          //strInterface        //nameserver
-                {localAddress,                        "default",         "8.8.8.8"},
+                {localAddress,                         "default",         "8.8.8.8"},
                 {localAddress,                         "utun4",          "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
                 {new String[]{"error"},                 null,             null},
                 {new String[]{"error"},                "anpi4",           null}
@@ -63,7 +64,9 @@ public class DNSGetHostsTest {
         try{
 
             actual = DNS.getHosts(strInterface, nameserver);
-         } catch (UnknownHostException | NullPointerException e)
+
+
+        } catch (UnknownHostException | NullPointerException e)
               {
                  actual = new String[]{"error"};
               }
