@@ -45,7 +45,6 @@ public class DNSGetIpTest {
                 {new String[]{"error"},                                                                 null}
         });
 
-
     }
 
     @Test
