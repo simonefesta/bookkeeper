@@ -57,7 +57,6 @@ public class DNSGetHostsTest {
 
     }
 
-
     @Test
     public void TestGetHosts()  {
          String[] actual;
