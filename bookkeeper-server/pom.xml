@@ -441,17 +441,21 @@
               <targetClasses>
                 <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCache</param>
                 <param>org.apache.bookkeeper.net.DNS</param>
+                <param>org.apache.bookkeeper.bookie.BookieImpl</param>
               </targetClasses>
+
               <targetTests>
 
-                <param>org.apache.bookkeeper.bookie.storage.ldb.GetWriteCacheTest</param>
-                <param>org.apache.bookkeeper.bookie.storage.ldb.PutWriteCacheTest</param>
+                 <param>org.apache.bookkeeper.bookie.storage.ldb.GetWriteCacheTest</param>
+                 <param>org.apache.bookkeeper.bookie.storage.ldb.PutWriteCacheTest</param>
 
-                <param>org.apache.bookkeeper.net.storage.DNSGetHostsTest</param>
-                <param>org.apache.bookkeeper.net.DNSGetIpTest</param>
-                <param>org.apache.bookkeeper.net.DNSReverseTest</param>
+                 <param>org.apache.bookkeeper.net.storage.DNSGetHostsTest</param>
+                 <param>org.apache.bookkeeper.net.DNSGetIpTest</param>
+                 <param>org.apache.bookkeeper.net.DNSReverseTest</param>
 
+                 <param>org.apache.bookkeeper.bookie.BookieImplCheckDirTest </param>
               </targetTests>
+
               <avoidCallsTo>
                 <avoidCallsTo>org.slf4j</avoidCallsTo>
               </avoidCallsTo>
