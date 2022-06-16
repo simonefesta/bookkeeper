@@ -39,7 +39,7 @@ public class DNSGetHostsTest {
                 while (interfaces.hasMoreElements() && !isFounded) {
                     networkInterface = interfaces.nextElement();
                     if (strInterface.equals("available")) {
-                        if (networkInterface.isUp() && networkInterface.getName() != "lo0") {
+                        if (networkInterface.isUp() && networkInterface.getName() != "lo") {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
@@ -47,7 +47,7 @@ public class DNSGetHostsTest {
 
                         }
                     } else {
-                        if (!networkInterface.isUp() && networkInterface.getName() != "lo0") {
+                        if (!networkInterface.isUp() && networkInterface.getName() != "lo") {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
