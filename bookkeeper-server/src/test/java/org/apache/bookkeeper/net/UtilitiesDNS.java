@@ -61,7 +61,7 @@ public class UtilitiesDNS {
      */
     public static boolean isIpAddress(String ipAddress) {
 
-        if (Objects.equals(ipAddress, "localhost"))
+        if (Objects.equals(ipAddress, "localhost") || Objects.equals(ipAddress,"::1/128"))
         {
             ipAddress = "127.0.0.1";
         }
