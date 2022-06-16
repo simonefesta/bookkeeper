@@ -79,13 +79,13 @@ public class DNSGetHostsTest {
                 {"valid",                         "available",           "local"},   // [interface ok, nameserver locale ok]
                 {"valid",                         "default",             "local"},     //[interface special ok, nameserver locale ok]
                 {"valid",                         "available",              null},
-               /* {"error",                            null,                  null},
+                {"error",                            null,                  null},
                 {"error",                           null,                "local"},
                 {"error",                           "-1",              "8.8.8.8"},
                 {"error",                           "-1",                  null},
                 {"error",                         "available",         "255.255.255.255"},  //error nameserver
                 {"error",                         "default",           "255.255.255.255"},  //error nameserver
-                {"error",                            null,             "255.255.255.255"},  //error nameserver*/
+                {"error",                            null,             "255.255.255.255"},  //error nameserver
 
         });
 
@@ -104,8 +104,8 @@ public class DNSGetHostsTest {
                 if (hostList.length>0)
                 {
                     for (String host : hostList)
-                    {   System.out.println(host);
-                        if (host.contains("::"))
+                    {
+                          if (host.contains("::"))
                             host = host.replace("::",":0:0:0:");
                           if (host.contains("%"))
                                      host = StringUtils.substringBefore(host,"%");
