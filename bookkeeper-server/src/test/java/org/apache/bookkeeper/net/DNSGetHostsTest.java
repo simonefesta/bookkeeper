@@ -1,19 +1,16 @@
 package org.apache.bookkeeper.net;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-
-
-
-
-import java.net.Inet4Address;
-
-import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 
 import static org.junit.Assert.*;
 
@@ -22,64 +19,133 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class DNSGetHostsTest {
 
-    private String[] expected;
     private String strInterface;
     private String nameserver;
-    private static String[] localAddress;
+    private String expected;
 
-
-
-
-    public DNSGetHostsTest(String[] expected, String strInterface, String nameserver) {
+    public DNSGetHostsTest(String expected, String strInterface, String nameserver) {
         configure(expected, strInterface, nameserver);
     }
 
 
-    public void configure(String[] expected, String strInterface, String nameserver) {
-        this.expected = expected;
-        this.strInterface = strInterface;
-        this.nameserver = nameserver;
+    private void configure(String expected, String strInterface, String nameserver)
+    {
+        if(strInterface != null && (strInterface.equals("available") || strInterface.equals("not_available"))) {
 
+            try {
+                boolean isFounded = false;
+                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                NetworkInterface networkInterface;
+                while (interfaces.hasMoreElements() && !isFounded) {
+                    networkInterface = interfaces.nextElement();
+                    if (strInterface.equals("available")) {
+                        if (networkInterface.isUp() && networkInterface.getName() != "lo0") {
+                            this.strInterface = networkInterface.getName();
+                            this.expected = expected;
+                            this.nameserver = nameserver;
+                            isFounded = true;
+
+                        }
+                    } else {
+                        if (!networkInterface.isUp() && networkInterface.getName() != "lo0") {
+                            this.strInterface = networkInterface.getName();
+                            this.expected = expected;
+                            this.nameserver = nameserver;
+                            isFounded = true;
+                        }
+                    }
+                }
+                if (!isFounded)
+                    Assert.fail("No interfaces in the system for testing");
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            { // strInterface = null || = default
+                 this.strInterface = strInterface;
+                 this.expected = expected;
+                 this.nameserver = nameserver;
+            }
     }
 
     @Parameterized.Parameters
     public static Collection<?> getParameter() {
-         localAddress = new String[]{"192.168.0.104", "localhost", "127.0.0.1"};
 
         return Arrays.asList(new Object[][]{
-                //expected                          //strInterface        //nameserver
-                {localAddress,                         "default",         "8.8.8.8"},
-                {localAddress,                         "utun4",          "8.8.8.8"},  //new String[]{InetAddress.getLocalHost().toString().substring(13)
-                {new String[]{"error"},                 null,             null},
-                {new String[]{"error"},                "anpi4",           null}
-        });
+                //expected                      //strInterface        //nameserver
+                {"valid",                         "available",         "8.8.8.8"},  //[ interface ok, nameserver non locale ok]
+                {"valid",                         "available",           "local"},   // [interface ok, nameserver locale ok]
+                {"valid",                         "default",             "local"},     //[interface special ok, nameserver locale ok]
+                {"valid",                         "available",              null},
+                {"error",                            null,                  null},
+                {"error",                           null,                "local"},
+                {"error",                           "-1",              "8.8.8.8"},
+                {"error",                           "-1",                  null},
+                {"error",                         "available",         "255.255.255.255"},  //error nameserver
+                {"error",                         "default",           "255.255.255.255"},  //error nameserver
+                {"error",                            null,             "255.255.255.255"},  //error nameserver*/
 
+        });
 
     }
 
     @Test
-    public void TestGetHosts()  {
-         String[] actual;
-        try{
+    public void TestGetHosts()
+    {
+        String[] hostList;
+        switch (expected)
+        {
 
-            actual = DNS.getHosts(strInterface, nameserver);
+            case "valid":
+            try {
+                hostList = DNS.getHosts(strInterface, nameserver);
+                if (hostList.length>0)
+                {
+                    for (String host : hostList)
+                    {
+                          if (host.length() > 30)
+                                     host = host.substring(0, 29);
+                          assertTrue(UtilitiesDNS.isIpAddress(host));
+                        }
 
+                    }
 
-        } catch (UnknownHostException | NullPointerException e)
-              {
-                 actual = new String[]{"error"};
-              }
-
-          if (expected == localAddress)
-          {     // Durante i test ho notato che actual ritornava 127.0.0.1 or localhost or 192.168.0.104. Non potendo 'prevedere' quale avrei ottenuto, confronto l'actual con tutti e 3.
-              assertTrue(Arrays.asList(expected).contains(actual[0]));
-          }
-          else {
-                assertArrayEquals(expected, actual);
+            } catch (Exception e)
+                {
+                    Assert.fail("Fail in getHost case 'valid'");
                 }
-        }
+            break;
 
+            case "error":
+                if (strInterface == null)
+                {
+                    try
+                    {
+                        DNS.getHosts(strInterface, nameserver);
+
+                    } catch (NullPointerException e) { //mi aspetto lei
+                        assertTrue(true);
+                        return;
+                    }
+                    catch (UnknownHostException e) {
+                        Assert.fail("Fail getHostsTest case 'error': HostException instead NullPoint");
+                    }
+                }
+                else
+                {
+                    try {
+                        DNS.getHosts(strInterface, nameserver);
+                    } catch (UnknownHostException e) {
+                        assertTrue(true);
+                        return;
+                    }
+                }
+                break;
+
+        }
     }
+}
 
 
 

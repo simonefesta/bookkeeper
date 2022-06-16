@@ -4,12 +4,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import javax.naming.NamingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DNSReverseTest {
@@ -18,44 +20,77 @@ public class DNSReverseTest {
     private InetAddress hostIp; //che voglio trasformare in nome
     private String nameServer; //name server dns server
 
-    public DNSReverseTest(String expected, InetAddress hostIp, String nameServer) {
-        configure(expected, hostIp, nameServer);
+    public DNSReverseTest(String expected, String ipString, String nameServer) {
+        configure(expected, ipString, nameServer);
     }
 
 
-    public void configure(String expected, InetAddress hostIp, String nameServer) {
+    private void configure(String expected, String ipString, String nameServer)  {
+        try{
+            if (ipString != null)
+                hostIp = InetAddress.getByName(ipString);
+            else
+                hostIp = null;
         this.expected = expected;
-        this.hostIp = hostIp;
         this.nameServer = nameServer;
+        }
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Parameterized.Parameters
-    public static Collection<?> getParameter() throws UnknownHostException {
+    public static Collection<?> getParameter()  {
 
         return Arrays.asList(new Object[][]{
-                //expected                              //hostIp                                //nameServer
-                {"mil04s50-in-f4.1e100.net.",   InetAddress.getByName("142.251.209.4"),         "8.8.8.8"}, //google
-                {"error",                               null,                                        null},
-                {"error",                        InetAddress.getByName("127.0.0.1"),            "8.8.8.8"},
-                //{"mil04s50-in-f4.1e100.net.",    InetAddress.getByName("2001:4860:4860::8888"), "8.8.8.8"}, //do ipv6. Bookkeeper non lo supporta, anche se InetAddress si.
-                {"error",    InetAddress.getByName("2001:4860:4860::8888"), "8.8.8.8"}, //do ipv6
-
+                //expected                              //hostIp                                       //nameServer
+                {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
+                {"dns.google.",                    "8.8.8.8",                    "8.8.8.8"},        // [ip valid, nameServer valid]
+                {"null",                               null,                         null},         // [Ip invalid, nameServer invalid]
+                {"null",                               null,                    "localhost"},         // [Ip invalid, nameServer invalid]
+                {"error",                          "127.0.0.1",                  "8.8.8.8"},         // [Ip special, nameServer public]
+                {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
+                {"error",		                   "8.8.8.8",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
+                {"error",		                   "0.0.0.0",			        "8.8.8.8"}          // [special ip,nameServer valid]
 
         });
-
 
     }
 
     @Test
     public void TestReverseDNS() {
         String actual;
-        try {
-            actual = DNS.reverseDns(hostIp,nameServer);
-        } catch (Exception e) {
-            actual = "error";
+        switch (expected) {
+            case "null":
+                try {
+                     DNS.reverseDns(hostIp, nameServer);
+                    }
+                catch (NullPointerException | NamingException e)
+                {
+                  if((e instanceof NullPointerException)) {
+                      assertTrue(true);
+                    }
+                }
+                break;
+
+            case "error":
+                try {
+                    DNS.reverseDns(hostIp, nameServer);
+                }
+                catch (NamingException e) {
+                    assertTrue(true);
+                }
+                break;
+
+            default:
+                try {
+                    actual = DNS.reverseDns(hostIp, nameServer);
+                }catch (NamingException e) {
+                    actual = "error";
+                }
+                assertEquals(expected,actual);
         }
-        assertEquals(expected,actual);
     }
 
 

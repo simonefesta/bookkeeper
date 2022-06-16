@@ -1,68 +1,207 @@
 package org.apache.bookkeeper.net;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 
 
 @RunWith(Parameterized.class)
 public class DNSGetIpTest {
 
-    private String[] expected;
+    private String expected;
     private String strInterface;
-    private static String[] localAddress;
+    private boolean returnSubInterfaces;
 
 
-    public DNSGetIpTest(String[] expected, String strInterface) {
-        configure(expected,strInterface);
+    public DNSGetIpTest(String expected, String strInterface, boolean returnSubInterfaces) {
+        configure(expected,strInterface, returnSubInterfaces);
     }
 
 
-    public void configure(String[] expected, String strInterface) {
-        this.expected = expected;
-        this.strInterface = strInterface;
+    public void configure(String expected, String strInterface, boolean returnSubInterfaces) {
+
+        if(strInterface != null && (strInterface.equals("available") || strInterface.equals("not_available")))
+        {
+            try {
+                boolean isFounded = false;
+                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                NetworkInterface networkInterface;
+                while(interfaces.hasMoreElements() && !isFounded)
+                {
+                    networkInterface=interfaces.nextElement();
+                    if(strInterface.equals("available"))
+                    {
+                        if(networkInterface.isUp() && networkInterface.getName() != "lo0")
+                        {
+                            this.strInterface = networkInterface.getName();
+                            this.expected = expected;
+                            this.returnSubInterfaces = returnSubInterfaces;
+                            isFounded = true;
+
+                        }
+                    }
+                    else {
+                        if(!networkInterface.isUp() && networkInterface.getName() != "lo0")
+                        {
+                            this.strInterface = networkInterface.getName();
+                            this.expected = expected;
+                            this.returnSubInterfaces = returnSubInterfaces;
+                            isFounded = true;
+                        }
+                    }
+
+                }
+                if(!isFounded)
+                    Assert.fail("No interfaces in the system for testing");
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        { // strInterface = null || = default
+            this.strInterface = strInterface;
+            this.expected = expected;
+            this.returnSubInterfaces = returnSubInterfaces;
+        }
 
 
     }
 
     @Parameterized.Parameters
     public static Collection<?> getParameter()  {
-        localAddress = new String[]{"0:0:0:0:0:0:0:1%lo0","127.0.0.1","fe80:0:0:0:0:0:0:1%lo0"};
+
+
 
         return Arrays.asList(new Object[][]{
-                //expected                                                                           //strInterface
-                {localAddress,                                                                        "lo0"}, //attenzione:  substring(13) poichè il metodo ritorna MacAir.local/indirizzo IP, e voglio solo indirizzo IP.
-                {new String[]{"error"},                                                               "bridge0"}, //non ha alcun 'inet6', quindi mi aspetto di non ottenere nulla.
-                {new String[]{"error"},                                                               "invalid"}, //fornisco interfaccia non valida, non mi aspetto nulla.
-                {new String[]{"error"},                                                                 null}
+                //expected                //strInterface      //returnSub
+                //{"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
+                {"valid",	              "available",		    true},			//{available},
+                {"valid",		           "default",			true},			//{special_string},
+                {"error", 	                "-1", 				true},			//{undefined},
+                {"error", 	                null, 				true},			//{null},
+                {"valid",		           "default",			false},			//{special_string},
+
         });
 
     }
 
     @Test
-    public void TestGetIpDNS() {
-        String[] actual;
-        try {
-            actual = DNS.getIPs(strInterface);
+    public void TestDefaultGetIpDNS() {
 
-        } catch (UnknownHostException | NullPointerException e) {
-            actual = new String[]{"error"};
+        String actual;
+        switch(expected)
+        {
+            case "valid":
+                try {
+                    actual=DNS.getDefaultIP(strInterface); // Il terminale di test riporta actual = fe80:0:0:0:bdb3:1a6c:c539:60b%utun4, con utun4 interface. Rimuovo questa parte.
+                    if (actual.length()>30)
+                        actual = actual.substring(0,29);
+                    assertTrue(UtilitiesDNS.isIpAddress(actual));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Assert.fail("Fail getDefaultIPTest: Expected: "+expected+" for strInterface: "+strInterface);
+                }
+                break;
+            case "error":
+                   try {
+                        DNS.getDefaultIP(strInterface);
+                    } catch (Exception e) {
+                        assertTrue(true);
+                        return;
+                    }
+                break;
+
+            /*case "down":
+                try {
+                    DNS.getDefaultIP(strInterface);
+                } catch (UnknownHostException e) {
+                    Assert.fail("Fail getDefaultIPTest: Expected: "+expected+" for strInterface: "+strInterface);
+                }
+                break; */
         }
-        if (expected == localAddress) {
-
-                assertTrue(Arrays.asList(expected).contains(actual[0]));
-            }
-        else{
-                assertArrayEquals(expected, actual);
-            }
-        }
-
     }
+
+
+    @Test
+    public void getIPsTest()
+    {
+        String[] iPList, iPListWithSub;
+        boolean check = true;
+
+        switch(expected)
+        {
+            case "valid":
+                try {
+                    iPList=DNS.getIPs(strInterface, returnSubInterfaces);
+                    if(iPList.length>0)
+                    { for (String iP : iPList) {
+                            if (iP.length()>30) //risolvo problema di rappresentazione indirizzo IP
+                                iP = iP.substring(0,29);
+                            if (!UtilitiesDNS.isIpAddress(iP)) {
+                                check = false;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        check=false; //non ho trovato nessuno
+                    assertTrue(check);
+                }
+                catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    Assert.fail("Fail getIPsTest case 'valid'");
+                }
+                if(!returnSubInterfaces)
+                {
+                    try {
+                        iPList=DNS.getIPs(strInterface, returnSubInterfaces);
+                        iPListWithSub=DNS.getIPs(strInterface, !returnSubInterfaces);
+                        assertTrue(iPListWithSub.length >= iPList.length); //mi aspetto che il metodo che include le subInterface mi dia più risultati rispetto ad un metodo che non le include
+                    }
+                    catch (UnknownHostException e) {
+                        Assert.fail("Fail getIPsTest case 'valid' with 'no' returnSubInt");
+                    }
+
+                }
+                break;
+
+            case "error":
+                if (strInterface == null)
+                {
+                  try {
+                        DNS.getIPs(strInterface, returnSubInterfaces);
+                    } catch (NullPointerException e) { //mi aspetto lei
+                        assertTrue(true);
+                        return;
+                    }
+                    catch (UnknownHostException e) {
+                        Assert.fail("Fail getIPsTest case 'error': HostException instead NullPoint");
+                    }
+                }
+                else
+                {
+                    try {
+                        DNS.getIPs(strInterface, returnSubInterfaces);
+                    } catch (UnknownHostException e) {
+                        assertTrue(true);
+                        return;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+
+

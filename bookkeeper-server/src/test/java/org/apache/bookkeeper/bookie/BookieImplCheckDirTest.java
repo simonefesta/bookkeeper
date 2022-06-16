@@ -34,9 +34,9 @@ public class BookieImplCheckDirTest {
         public void setup() {
 
             mockFile = mock(File.class);
-            //mockParent = mock(File.class);
+            mockParent = mock(File.class);
             Mockito.doReturn(false).when(mockFile).exists();
-            //Mockito.doReturn(mockParent).when(mockFile).getParentFile();
+            Mockito.doReturn(mockParent).when(mockFile).getParentFile();
             Mockito.doReturn(false).when(mockFile).mkdirs();
         }
 
@@ -127,7 +127,6 @@ public class BookieImplCheckDirTest {
             catch (Exception e)
             {
                 e.printStackTrace();
-                //throw new IOException("error setup test directory");
             }
         }
 
@@ -157,9 +156,12 @@ public class BookieImplCheckDirTest {
         }
 
         @AfterClass
-        public static void teardown() throws IOException {
-            if(!supportDir.delete()) {
-                throw new IOException("error deleting test directory");
+        public static void teardown() {
+            try{
+                supportDir.delete();
+            }
+            catch (Exception e){
+                e.printStackTrace();
             }
         }
     }
