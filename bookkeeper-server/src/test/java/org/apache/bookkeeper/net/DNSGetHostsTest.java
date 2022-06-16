@@ -40,7 +40,7 @@ public class DNSGetHostsTest {
                 while (interfaces.hasMoreElements() && !isFounded) {
                     networkInterface = interfaces.nextElement();
                     if (strInterface.equals("available")) {
-                        if (networkInterface.isUp() && networkInterface.getName() != "lo") {
+                        if (networkInterface.isUp()) {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
@@ -48,7 +48,7 @@ public class DNSGetHostsTest {
 
                         }
                     } else {
-                        if (!networkInterface.isUp() && networkInterface.getName() != "lo") {
+                        if (!networkInterface.isUp()) {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
@@ -105,8 +105,8 @@ public class DNSGetHostsTest {
                 {
                     for (String host : hostList)
                     {
-                          if (host.contains("::"))
-                            host = host.replace("::",":0:0:0:");
+                          if (host.contains("::") && host.length()>30) //ipv6 lenght
+                              host = host.replace("::",":0:0:0:");
                           if (host.contains("%"))
                                      host = StringUtils.substringBefore(host,"%");
                           if (host.contains("/"))
