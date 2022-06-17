@@ -1,5 +1,6 @@
 package org.apache.bookkeeper.net;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ public class DNSGetIpTest {
     private String expected;
     private String strInterface;
     private boolean returnSubInterfaces;
+
 
 
     public DNSGetIpTest(String expected, String strInterface, boolean returnSubInterfaces) {
@@ -85,51 +87,17 @@ public class DNSGetIpTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                //strInterface      //returnSub
-                //{"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
+               // {"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
                 {"valid",	              "available",		    true},			//{available},
                 {"valid",		           "default",			true},			//{special_string},
                 {"error", 	                "-1", 				true},			//{undefined},
                 {"error", 	                null, 				true},			//{null},
                 {"valid",		           "default",			false},			//{special_string},
+                {"valid",		           "available",		    false},			//{available},		{false} -> Mutation bug
+
 
         });
 
-    }
-
-    @Test
-    public void TestDefaultGetIpDNS() {
-
-        String actual;
-        switch(expected)
-        {
-            case "valid":
-                try {
-                    actual=DNS.getDefaultIP(strInterface); // Il terminale di test riporta actual = fe80:0:0:0:bdb3:1a6c:c539:60b%utun4, con utun4 interface. Rimuovo questa parte.
-                    if (actual.length()>30)
-                        actual = actual.substring(0,29);
-                    assertTrue(UtilitiesDNS.isIpAddress(actual));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail("Fail getDefaultIPTest: Expected: "+expected+" for strInterface: "+strInterface);
-                }
-                break;
-            case "error":
-                   try {
-                        DNS.getDefaultIP(strInterface);
-                    } catch (Exception e) {
-                        assertTrue(true);
-                        return;
-                    }
-                break;
-
-            /*case "down":
-                try {
-                    DNS.getDefaultIP(strInterface);
-                } catch (UnknownHostException e) {
-                    Assert.fail("Fail getDefaultIPTest: Expected: "+expected+" for strInterface: "+strInterface);
-                }
-                break; */
-        }
     }
 
 
@@ -181,7 +149,9 @@ public class DNSGetIpTest {
                 {
                   try {
                         DNS.getIPs(strInterface, returnSubInterfaces);
-                    } catch (NullPointerException e) { //mi aspetto lei
+                      Assert.fail("Fail getIPsTest case 'error': success instead exception with strInterface = null");
+
+                  } catch (NullPointerException e) { //mi aspetto lei
                         assertTrue(true);
                         return;
                     }
@@ -193,6 +163,8 @@ public class DNSGetIpTest {
                 {
                     try {
                         DNS.getIPs(strInterface, returnSubInterfaces);
+                        Assert.fail("Fail getIPsTest case 'error': success instead exception with strInterface != null");
+
                     } catch (UnknownHostException e) {
                         assertTrue(true);
                         return;

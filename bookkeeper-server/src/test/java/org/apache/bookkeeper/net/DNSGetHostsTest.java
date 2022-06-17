@@ -1,7 +1,9 @@
 package org.apache.bookkeeper.net;
 
 import org.apache.commons.lang.StringUtils;
+
 import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -20,9 +22,13 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class DNSGetHostsTest {
 
+
     private String strInterface;
     private String nameserver;
     private String expected;
+
+
+
 
     public DNSGetHostsTest(String expected, String strInterface, String nameserver) {
         configure(expected, strInterface, nameserver);
@@ -75,11 +81,11 @@ public class DNSGetHostsTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                      //strInterface        //nameserver
-                {"valid",                         "available",         "8.8.8.8"},  //[ interface ok, nameserver non locale ok]
+                {"valid",                         "available",         "8.8.8.8"},  //[ interface ok, nameserver non locale ok]     //MINIMALE
                 {"valid",                         "available",           "local"},   // [interface ok, nameserver locale ok]
-                {"valid",                         "default",             "local"},     //[interface special ok, nameserver locale ok]
+                {"valid",                         "default",             "local"},     //[interface special ok, nameserver locale ok]   //MINIMALE
                 {"valid",                         "available",              null},
-                {"error",                            null,                  null},
+                {"error",                            null,                  null},                          //MINIMALE
                 {"error",                           null,                "local"},
                 {"error",                           "-1",              "8.8.8.8"},
                 {"error",                           "-1",                  null},

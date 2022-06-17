@@ -1,12 +1,15 @@
 package org.apache.bookkeeper.net;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import javax.naming.NamingException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -23,6 +26,7 @@ public class DNSReverseTest {
     public DNSReverseTest(String expected, String ipString, String nameServer) {
         configure(expected, ipString, nameServer);
     }
+
 
 
     private void configure(String expected, String ipString, String nameServer)  {
@@ -45,14 +49,17 @@ public class DNSReverseTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                              //hostIp                                       //nameServer
-                {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
+               {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
                 {"dns.google.",                    "8.8.8.8",                    "8.8.8.8"},        // [ip valid, nameServer valid]
                 {"null",                               null,                         null},         // [Ip invalid, nameServer invalid]
                 {"null",                               null,                    "localhost"},         // [Ip invalid, nameServer invalid]
                 {"error",                          "127.0.0.1",                  "8.8.8.8"},         // [Ip special, nameServer public]
                 {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
                 {"error",		                   "8.8.8.8",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
-                {"error",		                   "0.0.0.0",			        "8.8.8.8"}          // [special ip,nameServer valid]
+                {"error",		                   "0.0.0.0",			        "8.8.8.8"},          // [special ip,nameServer valid]
+                {"error",		                   "8.8.8.8",			        "localhost"}  ,        // [special ip,nameServer valid]
+                {"error",		                   "191.154.176.1",		  "localhost"}          // [invalid ip,nameServer valid]
+
 
         });
 
@@ -65,6 +72,7 @@ public class DNSReverseTest {
             case "null":
                 try {
                      DNS.reverseDns(hostIp, nameServer);
+                    Assert.fail("Fail in ReverseTest case 'null': got success instead of fail");
                     }
                 catch (NullPointerException | NamingException e)
                 {
@@ -77,6 +85,7 @@ public class DNSReverseTest {
             case "error":
                 try {
                     DNS.reverseDns(hostIp, nameServer);
+                    Assert.fail("Fail in ReverseTest case 'error': got success instead of fail");
                 }
                 catch (NamingException e) {
                     assertTrue(true);
