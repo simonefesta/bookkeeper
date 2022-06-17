@@ -19,7 +19,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 /* Test for public static void checkDirectoryStructure(File dir) by  org.apache.bookkeeper.bookie.bookieImpl.
 Vediamo innanzitutto che il parametro richiesto è di tipo FILE, in particolare una directory.
-Questo suggerisce come suite di test minimale : [istanza_valida, istanza_non valida, null]
+Questo suggerisce come suite di test minimale: [istanza_valida, istanza_non valida, null]
  */
 @RunWith(value = Enclosed.class)
 public class BookieImplCheckDirTest {
@@ -78,9 +78,9 @@ public class BookieImplCheckDirTest {
             fileDirNotExists.delete();
             return Arrays.asList(new Object[][]{
                     //   expected            directory
-                    {true, new File("src/test/java")}, //dir exists
-                    {false, null}, //dir è null
-                    {true, fileDirNotExists},  //dir not exists anymore
+                    {true,                  new File("src/test/java")}, //dir exists
+                    {false,                 null}, //dir è null
+                    {true,                  fileDirNotExists},  //dir not exists anymore
             });
         }
 

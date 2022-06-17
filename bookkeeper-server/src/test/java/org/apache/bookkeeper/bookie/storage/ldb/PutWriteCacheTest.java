@@ -21,20 +21,22 @@ public class PutWriteCacheTest {
     private long entryId;
     private ByteBuf entry;
     private WriteCache cache = null;
-    long beforeCount;
+    private long beforeCount;
     private boolean existsMaxSegmentSize; // è un valore che in alcuni test è disponibile, altri no.
 
 //costruttore
-    public PutWriteCacheTest(boolean expected, long ledgerId, long entryId, ByteBuf entry, boolean existsMaxSegmentSize){
-        configure(expected,ledgerId,entryId,entry,existsMaxSegmentSize);
+    public PutWriteCacheTest(boolean expected, long ledgerId, long entryId, Integer entrySize, boolean existsMaxSegmentSize){
+        configure(expected,ledgerId,entryId,entrySize,existsMaxSegmentSize);
     }
 
-    public void configure(boolean expected, long ledgerId, long entryId, ByteBuf entry,boolean existsMaxSegmentSize)
+    public void configure(boolean expected, long ledgerId, long entryId, Integer entrySize,boolean existsMaxSegmentSize)
     {
         this.expected = expected;
         this.ledgerId = ledgerId;
         this.entryId = entryId;
-        this.entry = entry;
+        if(entrySize != null)
+            this.entry = UnpooledByteBufAllocator.DEFAULT.buffer(entrySize);
+        else this.entry = null;
         this.existsMaxSegmentSize = existsMaxSegmentSize; //serve nel setup per definire new writeCache
     }
 
@@ -44,12 +46,12 @@ public class PutWriteCacheTest {
 
 
         return Arrays.asList(new Object[][] {
-                //expected    ledgerId    entryId                        entry                               maxSegmentSize
-                {false,          0,          0,      null,                                                   false}, //null entry
-                {false,         -1,          1,      UnpooledByteBufAllocator.DEFAULT.buffer(1024),          false}, //ledgerId <0
-                {true,           0,          0,      UnpooledByteBufAllocator.DEFAULT.buffer(1024),          false},
-                {false,          0,          0,      UnpooledByteBufAllocator.DEFAULT.buffer(2*1024),         true }, //cache full
-                {false,          0,         -1,      UnpooledByteBufAllocator.DEFAULT.buffer(1024),          false } //entryId < 0
+                //expected    ledgerId    entryId                 entrySize                    maxSegmentSize
+                {false,          0,          0,                     null,                        false}, //null entry
+                {false,         -1,          1,                     1024,                        false}, //ledgerId <0
+                {true,           0,          0,                     1024,                        false},
+                {false,          0,          0,                    2*1024,                        true}, //cache full
+                {false,          0,         -1,                     1024,                         false} //entryId < 0
 
 
         });
@@ -67,7 +69,7 @@ public class PutWriteCacheTest {
 
       if (entry != null){
           beforeCount = cache.count();
-            entry.writerIndex(entry.capacity()); // in put, size = entry.readableBytes = writerIndex - readerIndex, il secondo è sempre 0, il primo lo metto = capacità (writerIndex <= capacity). fonte : https://netty.io/4.0/api/io/netty/buffer/ByteBuf.html
+          entry.writerIndex(entry.capacity()); // nel metodo put di WriteCache, size = entry.readableBytes = writerIndex - readerIndex, il secondo è sempre 0, il primo lo metto = capacità (writerIndex <= capacity). fonte : https://netty.io/4.0/api/io/netty/buffer/ByteBuf.html
 
       }
     }
