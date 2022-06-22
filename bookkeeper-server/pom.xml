@@ -449,7 +449,7 @@
                  <param>org.apache.bookkeeper.bookie.storage.ldb.GetWriteCacheTest</param>
                  <param>org.apache.bookkeeper.bookie.storage.ldb.PutWriteCacheTest</param>
 
-                 <param>org.apache.bookkeeper.net.storage.DNSGetHostsTest</param>
+                 <param>org.apache.bookkeeper.net.DNSGetHostsTest</param>
                  <param>org.apache.bookkeeper.net.DNSGetIpTest</param>
                  <param>org.apache.bookkeeper.net.DNSReverseTest</param>
 

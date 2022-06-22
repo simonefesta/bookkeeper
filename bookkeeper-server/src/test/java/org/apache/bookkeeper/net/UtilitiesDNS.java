@@ -52,6 +52,10 @@ public class UtilitiesDNS {
      *  <code>false</code> otherwise.
      */
     public static boolean isIpAddress(String ipAddress) {
+        List<String> alternativeNames = Arrays.asList("festinho", "localhost", "localhost.", "::1/128");
+        System.out.println("L'ip da verificare è " + ipAddress);
+        // a quanto pare può capitare anche 'festinho' e 'localhost.' <- col punto INCLUSO!
+        if (ipAddress == null) return false;
 
         if (ipAddress.contains("::") && ipAddress.length()>30) //ipv6 lenght
             ipAddress = ipAddress.replace("::",":0:0:0:");
@@ -59,9 +63,9 @@ public class UtilitiesDNS {
         if (ipAddress.length()>30) //risolvo problema di rappresentazione indirizzo IP
             ipAddress = ipAddress.substring(0,29);
 
-        if (Objects.equals(ipAddress, "localhost") || Objects.equals(ipAddress,"::1/128"))
+        if(alternativeNames.contains(ipAddress))
         {
-            ipAddress = "127.0.0.1";
+            return true; //alias of 127.0.0.1
         }
 
         if (ipAddress.contains("%"))

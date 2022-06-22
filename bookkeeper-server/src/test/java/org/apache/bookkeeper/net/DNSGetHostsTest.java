@@ -111,6 +111,7 @@ public class DNSGetHostsTest {
             case "valid":
             try {
                 hostList = DNS.getHosts(strInterface, nameserver);
+                assertNotNull(hostList);
                 if (hostList.length>0)
                 {
                     for (String host : hostList)
@@ -127,13 +128,17 @@ public class DNSGetHostsTest {
             break;
 
             case "error":
+
+
                 if (strInterface == null)
                 {
                     try
                     {
                         DNS.getHosts(strInterface, nameserver);
+                        Assert.fail("dns error success");
 
-                    } catch (NullPointerException e) { //mi aspetto lei
+                    } catch (NullPointerException e) {
+                        System.out.println("error case ok");//mi aspetto lei
                         assertTrue(true);
                         return;
                     }
@@ -152,9 +157,12 @@ public class DNSGetHostsTest {
                 }
                 break;
             case "down":
+                System.out.println("down");
                 try {
                     hostList = DNS.getHosts(strInterface, nameserver);
-                    assertTrue(hostList.length == 1);
+                    assertEquals(1, hostList.length);
+                    assertNotNull(hostList);
+
                 } catch (UnknownHostException | NullPointerException e) {
                     e.printStackTrace();
                     Assert.fail("Fail getHosts:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\nnameserver"+nameserver+"\n");
