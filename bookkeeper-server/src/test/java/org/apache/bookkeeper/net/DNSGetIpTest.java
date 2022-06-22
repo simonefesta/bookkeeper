@@ -87,13 +87,17 @@ public class DNSGetIpTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                //strInterface      //returnSub
-               // {"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
+                {"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
                 {"valid",	              "available",		    true},			//{available},
                 {"valid",		           "default",			true},			//{special_string},
                 {"error", 	                "-1", 				true},			//{undefined},
                 {"error", 	                null, 				true},			//{null},
                 {"valid",		           "default",			false},			//{special_string},
                 {"valid",		           "available",		    false},			//{available},		{false} -> Mutation bug
+
+                //accept Ips From subinterfaces
+                {"down",	"not_available",	true},			//{not_available},	{true}
+                {"down",	"not_available",	false},			//{not_available},	{false}
 
 
         });
@@ -114,8 +118,6 @@ public class DNSGetIpTest {
                     iPList=DNS.getIPs(strInterface, returnSubInterfaces);
                     if(iPList.length>0)
                     { for (String iP : iPList) {
-                            if (iP.length()>30) //risolvo problema di rappresentazione indirizzo IP
-                                iP = iP.substring(0,29);
                             if (!UtilitiesDNS.isIpAddress(iP)) {
                                 check = false;
                                 break;
@@ -171,9 +173,24 @@ public class DNSGetIpTest {
                     }
                 }
                 break;
+            case "down":
+                try {
+                    iPList=DNS.getIPs(strInterface, returnSubInterfaces);
+                    //Si attende l'indirizzo IP della sola interfaccia e non altri, poiché l'interfaccia risulta "down".
+                    assertTrue(iPList.length == 1 && UtilitiesDNS.isIpAddress(iPList[0]));
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    Assert.fail("Fail getDefaultIPTest:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\n");
+                }
+
+                break;
+
+            default:
+                Assert.fail("Fail getIPsTest:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\nreturnSubinterfaces: "+returnSubInterfaces+"\n");
         }
     }
 }
+
 
 
 

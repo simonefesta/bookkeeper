@@ -15,18 +15,10 @@ package org.apache.bookkeeper.net;
  * along with this program (LICENSE.txt); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-//package org.jamwiki.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.MessageFormat;
+import org.apache.commons.lang.StringUtils;
+
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +38,7 @@ public class UtilitiesDNS {
             VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern, Pattern.CASE_INSENSITIVE);
             VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern, Pattern.CASE_INSENSITIVE);
         } catch (PatternSyntaxException e) {
-            //logger.severe("Unable to compile pattern", e);
+            e.printStackTrace();
         }
     }
 
@@ -61,10 +53,21 @@ public class UtilitiesDNS {
      */
     public static boolean isIpAddress(String ipAddress) {
 
+        if (ipAddress.contains("::") && ipAddress.length()>30) //ipv6 lenght
+            ipAddress = ipAddress.replace("::",":0:0:0:");
+
+        if (ipAddress.length()>30) //risolvo problema di rappresentazione indirizzo IP
+            ipAddress = ipAddress.substring(0,29);
+
         if (Objects.equals(ipAddress, "localhost") || Objects.equals(ipAddress,"::1/128"))
         {
             ipAddress = "127.0.0.1";
         }
+
+        if (ipAddress.contains("%"))
+            ipAddress = StringUtils.substringBefore(ipAddress,"%");
+        if (ipAddress.contains("/"))
+            ipAddress = StringUtils.substringBefore(ipAddress,"/");
 
         Matcher m1 = UtilitiesDNS.VALID_IPV4_PATTERN.matcher(ipAddress);
         if (m1.matches()) {
