@@ -52,8 +52,7 @@ public class UtilitiesDNS {
      *  <code>false</code> otherwise.
      */
     public static boolean isIpAddress(String ipAddress) {
-        List<String> alternativeNames = Arrays.asList("festinho", "localhost", "localhost.", "::1/128");
-        System.out.println("L'ip da verificare è " + ipAddress);
+        List<String> alternativeNames = Arrays.asList("festinho","festinho.", "localhost", "localhost.", "::1/128");
         // a quanto pare può capitare anche 'festinho' e 'localhost.' <- col punto INCLUSO!
         if (ipAddress == null) return false;
 

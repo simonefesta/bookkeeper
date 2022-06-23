@@ -49,9 +49,13 @@ public class GetWriteCacheTest {
         return Arrays.asList(new Object[][]{
                 //   ledgerID     entryID      entrySize            expected
                 {      0,              0,        1024,            "valid"       }, //valid
-                {      2,              0,        1024,            "null"       }, //valid, but without 'put' in cache, invalid
+                {      0,              0,        1024,            "null"       }, //valid, but without 'put' in cache, invalid
                 {      0,              0,        null,            "null"       },
-                {      -1,            -1,        1024,            "illegal"    }
+                {      -1,            1,        1024,            "illegal"    },
+                {      0,            -1,        1024,            "illegal"    },
+
+                {      0,              -2,        1024,            "valid"       }, //valid
+
 
         });
 

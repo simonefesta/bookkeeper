@@ -46,12 +46,14 @@ public class PutWriteCacheTest {
 
 
         return Arrays.asList(new Object[][] {
-                //expected    ledgerId    entryId                 entrySize                    maxSegmentSize
-                {false,          0,          0,                     null,                        false}, //null entry
-                {false,         -1,          1,                     1024,                        false}, //ledgerId <0
-                {true,           0,          0,                     1024,                        false},
-                {false,          0,          0,                    2*1024,                        true}, //cache full
-                {false,          0,         -1,                     1024,                         false} //entryId < 0
+                //expected    ledgerId    entryId      entrySize          maxSegmentSize
+                {false,          0,          0,         null,              false}, //null entry
+                {false,         -1,          1,         1024,              false}, //ledgerId <0
+                {true,           0,          0,         1024,              false}, //success
+                {false,          0,          0,         6*1024,            true}, //cache full
+                {false,          0,         -1,         1024,              false}, //entryId < 0
+                {false,          0,          1,         2*1024,            true}, //jacoco: maxSegSize - localOffset < size
+                {true,           0,         -2,          1024,             false},//jacoco: currentLastEntryID > entryId. Comportamento anomalo.
 
 
         });

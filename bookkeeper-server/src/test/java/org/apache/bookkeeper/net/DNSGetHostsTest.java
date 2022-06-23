@@ -9,10 +9,12 @@ import org.junit.runners.Parameterized;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 
+import static org.apache.bookkeeper.net.DNS.*;
 import static org.junit.Assert.*;
 
 
@@ -44,7 +46,7 @@ public class DNSGetHostsTest {
                 while (interfaces.hasMoreElements() && !isFounded) {
                     networkInterface = interfaces.nextElement();
                     if (strInterface.equals("available")) {
-                        if (networkInterface.isUp()  && networkInterface.getName() != "lo") {
+                        if (networkInterface.isUp()  && !networkInterface.getName().equals("lo0")) {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
@@ -52,7 +54,8 @@ public class DNSGetHostsTest {
 
                         }
                     }else if(strInterface.equals("not_available")) {
-                        if (!networkInterface.isUp()  && networkInterface.getName() != "lo" ) {
+                        if (!networkInterface.isUp()  && !networkInterface.getName().equals("lo0") ) {
+                            System.out.println("Used interface " + networkInterface.getName());
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
                             this.nameserver = nameserver;
@@ -79,23 +82,15 @@ public class DNSGetHostsTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                      //strInterface        //nameserver
-                {"valid",                         "available",         "8.8.8.8"},  //[ interface ok, nameserver non locale ok]     //MINIMALE
-                {"valid",                         "available",           "local"},   // [interface ok, nameserver locale ok]
-                {"valid",                         "default",             "local"},     //[interface special ok, nameserver locale ok]   //MINIMALE
-                {"valid",                         "available",              null},
-                {"error",                            null,                  null},                          //MINIMALE
-                {"error",                           null,                "local"},
-                {"error",                           "-1",              "8.8.8.8"},
+                {"valid",                         "available",           "8.8.8.8"},    //MINIMALE
+                {"valid",                         "available",                null},  //CASO PARTICOLARE
+                {"error",                           null,                "8.8.8.8"}, //MINIMALE
+                {"error",                           "-1",                "8.8.8.8"}, //MINIMALE
                 {"error",                           "-1",                  null},
-                {"error",                         "available",         "255.255.255.255"},  //error nameserver
-                {"error",                         "default",           "255.255.255.255"},  //error nameserver
-                {"error",                            null,             "255.255.255.255"},  //error nameserver
-
-
+                {"valid",                         "available",         "-1"},  //error nameserver
+                {"valid",                          "available",         "255.255.255.255"},  //error nameserver
 
                 {"down",	"not_available",	"8.8.8.8"},					//{not_available},	{valid_notlocal_nameserver}
-                {"down",	"not_available",	"local"},					//{not_available},	{valid_local_namesarver}
-                {"down",	"not_available",	null},						//{not_available},	{null}
 
         });
 
@@ -111,15 +106,13 @@ public class DNSGetHostsTest {
             case "valid":
             try {
                 hostList = DNS.getHosts(strInterface, nameserver);
-                assertNotNull(hostList);
                 if (hostList.length>0)
-                {
+                {   assertNotNull(getIPs(strInterface));
                     for (String host : hostList)
                     {
-
-                          assertTrue(UtilitiesDNS.isIpAddress(host));
-                        }
-                        }
+                        assertTrue(UtilitiesDNS.isIpAddress(host));
+                    }
+                }
 
             } catch (Exception e)
                 {
@@ -128,8 +121,6 @@ public class DNSGetHostsTest {
             break;
 
             case "error":
-
-
                 if (strInterface == null)
                 {
                     try
@@ -138,7 +129,7 @@ public class DNSGetHostsTest {
                         Assert.fail("dns error success");
 
                     } catch (NullPointerException e) {
-                        System.out.println("error case ok");//mi aspetto lei
+                        e.printStackTrace();
                         assertTrue(true);
                         return;
                     }
@@ -150,18 +141,19 @@ public class DNSGetHostsTest {
                 {
                     try {
                         DNS.getHosts(strInterface, nameserver);
+                        Assert.fail("dns error case, but success");
                     } catch (UnknownHostException e) {
+                        e.printStackTrace();
                         assertTrue(true);
                         return;
                     }
                 }
                 break;
+
             case "down":
-                System.out.println("down");
                 try {
                     hostList = DNS.getHosts(strInterface, nameserver);
                     assertEquals(1, hostList.length);
-                    assertNotNull(hostList);
 
                 } catch (UnknownHostException | NullPointerException e) {
                     e.printStackTrace();
@@ -172,6 +164,9 @@ public class DNSGetHostsTest {
 
         }
     }
+
+
+
 }
 
 

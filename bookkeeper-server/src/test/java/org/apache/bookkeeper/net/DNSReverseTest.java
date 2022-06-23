@@ -48,17 +48,18 @@ public class DNSReverseTest {
     public static Collection<?> getParameter()  {
 
         return Arrays.asList(new Object[][]{
-                //expected                              //hostIp                                       //nameServer
-               {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
-                {"dns.google.",                    "8.8.8.8",                    "8.8.8.8"},        // [ip valid, nameServer valid]
+                //expected                              //hostIp               //nameServer
+                {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
+                {"error",		                   "191.154.176.1",		         "8.8.8.8"},          // [invalid ip,nameServer valid]
                 {"null",                               null,                         null},         // [Ip invalid, nameServer invalid]
-                {"null",                               null,                    "localhost"},         // [Ip invalid, nameServer invalid]
-                {"error",                          "127.0.0.1",                  "8.8.8.8"},         // [Ip special, nameServer public]
-                {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
-                {"error",		                   "8.8.8.8",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
-                {"error",		                   "0.0.0.0",			        "8.8.8.8"},          // [special ip,nameServer valid]
-                {"error",		                   "8.8.8.8",			        "localhost"}  ,        // [special ip,nameServer valid]
-                {"error",		                   "191.154.176.1",		  "localhost"}          // [invalid ip,nameServer valid]
+                {"null",                               null,                        "8.8.8.8"},         // [Ip invalid, nameServer invalid]
+                {"error",		                   "142.251.209.4",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
+                //Fine test minimali
+                  {"dns.google.",                    "8.8.8.8",                    "8.8.8.8"},        // [ip valid, nameServer valid]
+                  {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
+                  {"error",		                   "0.0.0.0",			        "8.8.8.8"},          // [special ip,nameServer valid]
+                  {"error",		                   "8.8.8.8",			        "localhost"}  ,        // [special ip,nameServer valid] */
+
 
 
         });
