@@ -106,6 +106,8 @@ public class DNSGetHostsTest {
             case "valid":
             try {
                 hostList = DNS.getHosts(strInterface, nameserver);
+                if(nameserver==null) assertNotEquals("festinho",hostList[0]); //increase mutation //works with Ubuntu
+
                 if (hostList.length>0)
                 {   assertNotNull(getIPs(strInterface));
                     for (String host : hostList)
@@ -129,7 +131,7 @@ public class DNSGetHostsTest {
                         Assert.fail("dns error success");
 
                     } catch (NullPointerException e) {
-                        e.printStackTrace();
+
                         assertTrue(true);
                         return;
                     }
@@ -143,7 +145,6 @@ public class DNSGetHostsTest {
                         DNS.getHosts(strInterface, nameserver);
                         Assert.fail("dns error case, but success");
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
                         assertTrue(true);
                         return;
                     }
@@ -156,7 +157,7 @@ public class DNSGetHostsTest {
                     assertEquals(1, hostList.length);
 
                 } catch (UnknownHostException | NullPointerException e) {
-                    e.printStackTrace();
+
                     Assert.fail("Fail getHosts:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\nnameserver"+nameserver+"\n");
                 }
                 break;
