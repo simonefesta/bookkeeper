@@ -64,7 +64,7 @@ public class DNSGetHostsTest {
                     }
                 }
                 if (!isFounded)
-                    Assert.fail("No interfaces in the system for testing");
+                    Assert.fail("No interfaces in the system for testing. Maybe all networkInterfaces are available, and you're trying to test a not_available networkInterface. Try in terminal:  sudo ifconfig [nameInterface] down.");
             } catch (SocketException e) {
                 e.printStackTrace();
             }
