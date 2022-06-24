@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -44,7 +45,7 @@ public class DNSGetIpTest {
                     networkInterface=interfaces.nextElement();
                     if(strInterface.equals("available"))
                     {
-                        if(networkInterface.isUp() && networkInterface.getName() != "lo0")
+                        if(networkInterface.isUp() && !networkInterface.getName().equals("lo0")) //"lo" in Linux.
                         {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
@@ -54,7 +55,7 @@ public class DNSGetIpTest {
                         }
                     }
                     else {
-                        if(!networkInterface.isUp() && networkInterface.getName() != "lo0")
+                        if(!networkInterface.isUp() && !networkInterface.getName().equals("lo0"))
                         {
                             this.strInterface = networkInterface.getName();
                             this.expected = expected;
@@ -62,8 +63,8 @@ public class DNSGetIpTest {
                             isFounded = true;
                         }
                     }
-
                 }
+
                 if(!isFounded)
                     Assert.fail("No interfaces in the system for testing");
             } catch (SocketException e) {
@@ -94,10 +95,11 @@ public class DNSGetIpTest {
                 {"error", 	                null, 				true},			//{null},
                 {"valid",		           "default",			false},			//{special_string},
                 {"valid",		           "available",		    false},			//{available},		{false} -> Mutation bug
+                {"down",	              "not_available",	    false},			//{not_available},	{false}
+                {"valid",		           "lo0",		       false},
+               // {"valid",		           "wlp2s0",		       true},		increase coverage on Linux
 
-                //accept Ips From subinterfaces
-                {"down",	"not_available",	true},			//{not_available},	{true}
-                {"down",	"not_available",	false},			//{not_available},	{false}
+
 
 
         });
@@ -123,13 +125,15 @@ public class DNSGetIpTest {
                                 break;
                             }
                         }
+
                     }
                     else
                         check=false; //non ho trovato nessuno
+                   // if(strInterface.equals("wlp2s0") && returnSubInterfaces) {assertEquals(3,iPList.length); } Works on Linux
                     assertTrue(check);
                 }
                 catch (UnknownHostException e) {
-                    e.printStackTrace();
+
                     Assert.fail("Fail getIPsTest case 'valid'");
                 }
                 if(!returnSubInterfaces)
@@ -154,6 +158,7 @@ public class DNSGetIpTest {
                       Assert.fail("Fail getIPsTest case 'error': success instead exception with strInterface = null");
 
                   } catch (NullPointerException e) { //mi aspetto lei
+
                         assertTrue(true);
                         return;
                     }
@@ -168,6 +173,7 @@ public class DNSGetIpTest {
                         Assert.fail("Fail getIPsTest case 'error': success instead exception with strInterface != null");
 
                     } catch (UnknownHostException e) {
+
                         assertTrue(true);
                         return;
                     }
@@ -175,11 +181,12 @@ public class DNSGetIpTest {
                 break;
             case "down":
                 try {
+
                     iPList=DNS.getIPs(strInterface, returnSubInterfaces);
                     //Si attende l'indirizzo IP della sola interfaccia e non altri, poiché l'interfaccia risulta "down".
                     assertTrue(iPList.length == 1 && UtilitiesDNS.isIpAddress(iPList[0]));
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+
                     Assert.fail("Fail getDefaultIPTest:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\n");
                 }
 
