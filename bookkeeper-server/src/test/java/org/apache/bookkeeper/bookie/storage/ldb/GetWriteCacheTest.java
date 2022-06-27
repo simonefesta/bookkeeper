@@ -119,6 +119,7 @@ public class GetWriteCacheTest {
 
     @After
     public void tearDown(){
+        cache.clear();
         cache.close();
     }
 }

@@ -2,6 +2,7 @@ package org.apache.bookkeeper.bookie.storage.ldb;
 
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import org.junit.After;
 import org.junit.Assert;
@@ -21,8 +22,8 @@ public class PutWriteCacheTest {
     private long entryId;
     private ByteBuf entry;
     private WriteCache cache = null;
-    private long beforeCount;
     private boolean existsMaxSegmentSize; // è un valore che in alcuni test è disponibile, altri no.
+    private static final long beforeCount = 0;
 
 //costruttore
     public PutWriteCacheTest(boolean expected, long ledgerId, long entryId, Integer entrySize, boolean existsMaxSegmentSize){
@@ -35,7 +36,7 @@ public class PutWriteCacheTest {
         this.ledgerId = ledgerId;
         this.entryId = entryId;
         if(entrySize != null)
-            this.entry = UnpooledByteBufAllocator.DEFAULT.buffer(entrySize);
+            this.entry = Unpooled.wrappedBuffer(new byte[entrySize]);
         else this.entry = null;
         this.existsMaxSegmentSize = existsMaxSegmentSize; //serve nel setup per definire new writeCache
     }
@@ -69,11 +70,11 @@ public class PutWriteCacheTest {
             cache = new WriteCache(UnpooledByteBufAllocator.DEFAULT,10*1024);
         }
 
-      if (entry != null){
+     /* if (entry != null){
           beforeCount = cache.count();
           entry.writerIndex(entry.capacity()); // nel metodo put di WriteCache, size = entry.readableBytes = writerIndex - readerIndex, il secondo è sempre 0, il primo lo metto = capacità (writerIndex <= capacity). fonte : https://netty.io/4.0/api/io/netty/buffer/ByteBuf.html
 
-      }
+      }*/
     }
 
     @Test
@@ -83,7 +84,6 @@ public class PutWriteCacheTest {
 
             cache.put(ledgerId,entryId,entry);
             actual = cache.get(ledgerId,entryId).equals(entry);
-
         } catch (Exception e)
         {
             actual = false;

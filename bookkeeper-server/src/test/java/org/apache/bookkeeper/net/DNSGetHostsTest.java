@@ -86,6 +86,8 @@ public class DNSGetHostsTest {
                 {"valid",                         "available",                null},  //CASO PARTICOLARE
                 {"error",                           null,                "8.8.8.8"}, //MINIMALE
                 {"error",                           "-1",                "8.8.8.8"}, //MINIMALE
+                {"valid",                         "default",           "8.8.8.8"},
+
                 {"error",                           "-1",                  null},
                 {"valid",                         "available",         "-1"},  //error nameserver
                 {"valid",                          "available",         "255.255.255.255"},  //error nameserver

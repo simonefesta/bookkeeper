@@ -52,6 +52,8 @@ public class DNSReverseTest {
                 {"mil04s50-in-f4.1e100.net.",      "142.251.209.4",              "8.8.8.8"},         // [Ip public, nameServer public] google
                 {"error",		                   "191.154.176.1",		         "8.8.8.8"},          // [invalid ip,nameServer valid]
                 {"null",                               null,                         null},         // [Ip invalid, nameServer invalid]
+                {"mil04s50-in-f4.1e100.net.",     "142.251.209.4",                  null},         // [Ip invalid, nameServer invalid]
+
                 {"null",                               null,                        "8.8.8.8"},         // [Ip invalid, nameServer invalid]
                 {"error",		                   "142.251.209.4",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
                 //Fine test minimali
