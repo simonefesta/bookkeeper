@@ -6,10 +6,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import javax.naming.NamingException;
-import java.io.IOException;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -58,7 +57,7 @@ public class DNSReverseTest {
                 {"error",		                   "142.251.209.4",			        "255.255.255.255"}, // [ip valid, nameServer invalid]
                 //Fine test minimali
                   {"dns.google.",                    "8.8.8.8",                    "8.8.8.8"},        // [ip valid, nameServer valid]
-                  {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
+                //  {"error",                          "2001:4860:4860::8888",       "8.8.8.8"},         // [Ipv6 valid, nameServerV public]. Dovrebbe ritornare mil04s50-in-f4.1e100.net.
                   {"error",		                   "0.0.0.0",			        "8.8.8.8"},          // [special ip,nameServer valid]
                   {"error",		                   "8.8.8.8",			        "localhost"}  ,        // [special ip,nameServer valid] */
 

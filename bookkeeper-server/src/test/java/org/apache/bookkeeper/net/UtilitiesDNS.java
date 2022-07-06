@@ -19,6 +19,8 @@ package org.apache.bookkeeper.net;
 import org.apache.commons.lang.StringUtils;
 
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,6 +80,10 @@ public class UtilitiesDNS {
         }
         Matcher m2 = UtilitiesDNS.VALID_IPV6_PATTERN.matcher(ipAddress);
         return m2.matches();
+    }
+
+    public static String getCachedHostname() throws UnknownHostException {
+        return InetAddress.getLocalHost().getHostName();
     }
 
 

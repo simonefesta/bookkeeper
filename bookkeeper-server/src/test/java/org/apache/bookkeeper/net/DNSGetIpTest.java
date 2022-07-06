@@ -12,7 +12,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -97,7 +96,7 @@ public class DNSGetIpTest {
                 {"valid",		           "available",		    false},			//{available},		{false} -> Mutation bug
                 {"down",	              "not_available",	    false},			//{not_available},	{false}
                 {"valid",		           "lo0",		       false},
-               // {"valid",		           "wlp2s0",		       true},		increase coverage on Linux
+              //  {"valid",		           "wlp2s0",		       true},		//increase coverage on Linux
 
 
 
@@ -133,15 +132,15 @@ public class DNSGetIpTest {
                     assertTrue(check);
                 }
                 catch (UnknownHostException e) {
-
                     Assert.fail("Fail getIPsTest case 'valid'");
                 }
+
                 if(!returnSubInterfaces)
                 {
                     try {
                         iPList=DNS.getIPs(strInterface, returnSubInterfaces);
                         iPListWithSub=DNS.getIPs(strInterface, !returnSubInterfaces);
-                        assertTrue(iPListWithSub.length >= iPList.length); //mi aspetto che il metodo che include le subInterface mi dia più risultati rispetto ad un metodo che non le include
+                        assertTrue(iPListWithSub.length >= iPList.length); //mi aspetto che il metodo che include le subInterface mi dia più risultati rispetto a un metodo che non le include
                     }
                     catch (UnknownHostException e) {
                         Assert.fail("Fail getIPsTest case 'valid' with 'no' returnSubInt");
@@ -179,6 +178,7 @@ public class DNSGetIpTest {
                     }
                 }
                 break;
+
             case "down":
                 try {
 

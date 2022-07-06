@@ -6,15 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 
-import static org.apache.bookkeeper.net.DNS.*;
 import static org.junit.Assert.*;
 
 
@@ -53,7 +52,7 @@ public class DNSGetHostsTest {
                             isFounded = true;
 
                         }
-                    }else if(strInterface.equals("not_available")) {
+                    }else {
                         if (!networkInterface.isUp()  && !networkInterface.getName().equals("lo0") ) {
                             System.out.println("Used interface " + networkInterface.getName());
                             this.strInterface = networkInterface.getName();
@@ -99,23 +98,21 @@ public class DNSGetHostsTest {
     }
 
     @Test
-    public void TestGetHosts()
-    {
+    public void TestGetHosts() throws UnknownHostException {
         String[] hostList;
         switch (expected)
         {
 
             case "valid":
+                //System.out.println(InetAddress.getLocalHost().getHostName());
             try {
                 hostList = DNS.getHosts(strInterface, nameserver);
-                if(nameserver==null) assertNotEquals("festinho",hostList[0]); //increase mutation //works with Ubuntu
+                if(nameserver==null) assertNotEquals(UtilitiesDNS.getCachedHostname(),hostList[0]); //increase mutation //works with Ubuntu
 
-                if (hostList.length>0)
-                {   assertNotNull(getIPs(strInterface));
-                    for (String host : hostList)
-                    {
-                        assertTrue(UtilitiesDNS.isIpAddress(host));
-                    }
+                //assertNotNull(getIPs(strInterface));
+                for (String host : hostList)
+                {
+                    assertTrue(UtilitiesDNS.isIpAddress(host));
                 }
 
             } catch (Exception e)

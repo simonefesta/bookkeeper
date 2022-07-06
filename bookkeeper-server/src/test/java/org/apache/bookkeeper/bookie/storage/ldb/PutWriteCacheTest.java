@@ -70,11 +70,6 @@ public class PutWriteCacheTest {
             cache = new WriteCache(UnpooledByteBufAllocator.DEFAULT,10*1024);
         }
 
-     /* if (entry != null){
-          beforeCount = cache.count();
-          entry.writerIndex(entry.capacity()); // nel metodo put di WriteCache, size = entry.readableBytes = writerIndex - readerIndex, il secondo è sempre 0, il primo lo metto = capacità (writerIndex <= capacity). fonte : https://netty.io/4.0/api/io/netty/buffer/ByteBuf.html
-
-      }*/
     }
 
     @Test
