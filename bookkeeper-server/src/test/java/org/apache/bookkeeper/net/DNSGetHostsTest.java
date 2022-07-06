@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -91,25 +90,22 @@ public class DNSGetHostsTest {
                 {"valid",                         "available",         "-1"},  //error nameserver
                 {"valid",                          "available",         "255.255.255.255"},  //error nameserver
 
-                {"down",	"not_available",	"8.8.8.8"},					//{not_available},	{valid_notlocal_nameserver}
+                {"down",	"not_available",	"8.8.8.8"},					//{not_available},	{valid_notlocal_ns}
 
         });
 
     }
 
     @Test
-    public void TestGetHosts() throws UnknownHostException {
+    public void TestGetHosts() {
         String[] hostList;
         switch (expected)
         {
 
             case "valid":
-                //System.out.println(InetAddress.getLocalHost().getHostName());
             try {
                 hostList = DNS.getHosts(strInterface, nameserver);
-                if(nameserver==null) assertNotEquals(UtilitiesDNS.getCachedHostname(),hostList[0]); //increase mutation //works with Ubuntu
-
-                //assertNotNull(getIPs(strInterface));
+                //if(nameserver==null && strInterface =="wlp2s0") assertNotEquals(UtilitiesDNS.getCachedHostname(),hostList[0]); //increase mutation //works with Ubuntu
                 for (String host : hostList)
                 {
                     assertTrue(UtilitiesDNS.isIpAddress(host));
