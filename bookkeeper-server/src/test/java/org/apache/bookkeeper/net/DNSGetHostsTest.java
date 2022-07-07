@@ -80,17 +80,16 @@ public class DNSGetHostsTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                      //strInterface        //nameserver
-                {"valid",                         "available",           "8.8.8.8"},    //MINIMALE
-                {"valid",                         "available",                null},  //CASO PARTICOLARE
-                {"error",                           null,                "8.8.8.8"}, //MINIMALE
-                {"error",                           "-1",                "8.8.8.8"}, //MINIMALE
+                {"valid",                         "available",           "8.8.8.8"},    //{interface ok, nameserver ok}
+                {"valid",                         "available",                null},  // {interface ok, nameserver null}
+                {"valid",                         "available",         "-1"},         // {interface ok, nameserver invalid}
+                {"error",                           null,                "8.8.8.8"}, // {interface null, nameserver valid}
+                {"error",                           "-1",                "8.8.8.8"}, // {interface invalid, nameserver valid}
+
                 {"valid",                         "default",           "8.8.8.8"},
-
                 {"error",                           "-1",                  null},
-                {"valid",                         "available",         "-1"},  //error nameserver
                 {"valid",                          "available",         "255.255.255.255"},  //error nameserver
-
-                {"down",	"not_available",	"8.8.8.8"},					//{not_available},	{valid_notlocal_ns}
+                {"down",	                       "not_available",	        "8.8.8.8"},					//{not_available},	{valid_notlocal_ns}
 
         });
 
@@ -149,11 +148,11 @@ public class DNSGetHostsTest {
             case "down":
                 try {
                     hostList = DNS.getHosts(strInterface, nameserver);
-                    assertEquals(1, hostList.length);
+                    assertTrue(hostList.length == 1 && UtilitiesDNS.isIpAddress(hostList[0]));
 
                 } catch (UnknownHostException | NullPointerException e) {
 
-                    Assert.fail("Fail getHosts:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\nnameserver"+nameserver+"\n");
+                    Assert.fail("Fail GetHostsTest case 'down': Exception instead of NotException");
                 }
                 break;
 

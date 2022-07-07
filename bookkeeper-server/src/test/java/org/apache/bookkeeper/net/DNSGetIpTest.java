@@ -87,18 +87,17 @@ public class DNSGetIpTest {
 
         return Arrays.asList(new Object[][]{
                 //expected                //strInterface      //returnSub
-                {"down",	               "not_available",	    true},	        //{not_available},//Non disponibile sul mio pc
-                {"valid",	              "available",		    true},			//{available},
-                {"valid",		           "default",			true},			//{special_string},
-                {"error", 	                "-1", 				true},			//{undefined},
-                {"error", 	                null, 				true},			//{null},
+                {"valid",	              "available",		    true},
+                {"error", 	                null, 				true},
+                {"error", 	                "-1", 				true},			//{invalid},
+                {"valid",		           "available",		    false},         //mutation
+
+
                 {"valid",		           "default",			false},			//{special_string},
-                {"valid",		           "available",		    false},			//{available},		{false} -> Mutation bug
                 {"down",	              "not_available",	    false},			//{not_available},	{false}
-                {"valid",		           "lo0",		       false},
-              //  {"valid",		           "wlp2s0",		       true},		//increase coverage on Linux
+                {"down",	              "not_available",	    true},	        //{not_available},
 
-
+                //  {"valid",		           "wlp2s0",		       true},		//increase coverage on Linux
 
 
         });
@@ -140,7 +139,7 @@ public class DNSGetIpTest {
                     try {
                         iPList=DNS.getIPs(strInterface, returnSubInterfaces);
                         iPListWithSub=DNS.getIPs(strInterface, !returnSubInterfaces);
-                        assertTrue(iPListWithSub.length >= iPList.length); //mi aspetto che il metodo che include le subInterface mi dia più risultati rispetto a un metodo che non le include
+                        assertTrue(iPListWithSub.length >= iPList.length); //mi aspetto che il metodo che include le subInterface mi dia  risultati >= rispetto a un metodo che non le include
                     }
                     catch (UnknownHostException e) {
                         Assert.fail("Fail getIPsTest case 'valid' with 'no' returnSubInt");
@@ -157,7 +156,6 @@ public class DNSGetIpTest {
                       Assert.fail("Fail getIPsTest case 'error': success instead exception with strInterface = null");
 
                   } catch (NullPointerException e) { //mi aspetto lei
-
                         assertTrue(true);
                         return;
                     }
@@ -183,17 +181,16 @@ public class DNSGetIpTest {
                 try {
 
                     iPList=DNS.getIPs(strInterface, returnSubInterfaces);
-                    //Si attende l'indirizzo IP della sola interfaccia e non altri, poiché l'interfaccia risulta "down".
                     assertTrue(iPList.length == 1 && UtilitiesDNS.isIpAddress(iPList[0]));
                 } catch (UnknownHostException e) {
 
-                    Assert.fail("Fail getDefaultIPTest:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\n");
+                    Assert.fail("Fail getIPTest case 'down': unknownHostException instead of NotException");
                 }
 
                 break;
 
             default:
-                Assert.fail("Fail getIPsTest:\nExpected: "+expected+"\nstrInterface: "+strInterface+"\nreturnSubinterfaces: "+returnSubInterfaces+"\n");
+                Assert.fail("no 'case' defined in test.");
         }
     }
 }
